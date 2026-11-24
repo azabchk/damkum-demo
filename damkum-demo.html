@@ -1,0 +1,1025 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>دمكم — نسخة تجريبية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#faf5f1;
+        --surface:#ffffff;
+        --surface2:#f7edea;
+        --ink:#241418;
+        --muted:#7d666c;
+        --line:#ecd9d5;
+        --red:#b3122e;
+        --red-dark:#8c0d24;
+        --red-soft:#fdeef0;
+        --red-mid:#f3c3cb;
+        --green:#1e7a4c;
+        --green-bg:#e4f3ea;
+        --green-line:#a9d6ba;
+        --amber-bg:#fff3cf;
+        --amber-line:#e3c268;
+        --amber-ink:#6d5410;
+        --wa-head:#075e54;
+        --wa-bg:#e9e1d8;
+        --wa-bubble:#ffffff;
+        --wa-link:#0b7ea4;
+        --wa-meta:#8696a0;
+        --shadow:0 12px 32px rgba(140,13,36,.10);
+        --nav-bg:rgba(255,255,255,.95);
+        --overlay:rgba(30,10,14,.55);
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#161013;
+          --surface:#231a1e;
+          --surface2:#2c2126;
+          --ink:#f6ecee;
+          --muted:#b8a3a9;
+          --line:#3d2c32;
+          --red:#e83a56;
+          --red-dark:#ff5c74;
+          --red-soft:#3a1e26;
+          --red-mid:#5a2b36;
+          --green:#4cc084;
+          --green-bg:#173527;
+          --green-line:#2c5c40;
+          --amber-bg:#3a2f14;
+          --amber-line:#8a7434;
+          --amber-ink:#f2d98c;
+          --wa-head:#1f2c34;
+          --wa-bg:#0b141a;
+          --wa-bubble:#1f2c34;
+          --wa-link:#53bdeb;
+          --wa-meta:#8696a0;
+          --shadow:0 12px 32px rgba(0,0,0,.45);
+          --nav-bg:rgba(29,20,24,.95);
+          --overlay:rgba(0,0,0,.65);
+        }
+      }
+      *{box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      body{
+        margin:0;background:var(--bg);color:var(--ink);
+        font-family:"Cairo",system-ui,"Segoe UI",Tahoma,sans-serif;
+        line-height:1.65;-webkit-font-smoothing:antialiased;
+      }
+      button,select,input{font-family:inherit}
+      button,select,input{min-height:48px}
+      .wrap{max-width:700px;margin:0 auto;padding:0 16px 112px}
+
+      /* Demo banner */
+      .demo-banner{
+        position:sticky;top:0;z-index:40;
+        background:var(--amber-bg);color:var(--amber-ink);
+        border-bottom:1.5px solid var(--amber-line);
+        text-align:center;font-weight:800;font-size:.92rem;
+        padding:9px 14px;display:flex;align-items:center;justify-content:center;gap:8px;
+      }
+      .demo-banner svg{flex:none}
+
+      /* Brand row */
+      .brand-row{display:flex;align-items:center;gap:11px;padding:20px 2px 2px}
+      .brand-mark{
+        width:46px;height:46px;border-radius:15px;background:var(--red);
+        display:grid;place-items:center;flex:none;box-shadow:var(--shadow);
+      }
+      .brand-name{font-size:1.6rem;font-weight:900;line-height:1.1}
+      .brand-sub{font-size:.88rem;color:var(--muted);font-weight:600}
+
+      /* Screens */
+      .screen{display:none}
+      .screen.active{display:block;animation:fade .25s ease}
+      @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+      /* Buttons */
+      .btn{
+        border:0;cursor:pointer;border-radius:16px;padding:12px 22px;
+        font-size:1.05rem;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+        transition:transform .12s ease, background .12s ease;text-decoration:none;min-height:56px;
+      }
+      .btn:active{transform:scale(.97)}
+      .btn-red{background:var(--red);color:#fff}
+      .btn-red:hover{background:var(--red-dark)}
+      .btn-line{background:var(--surface);color:var(--red);border:1.5px solid var(--red-mid)}
+      .btn-plain{background:none;color:var(--muted);border:0;min-height:48px;padding:10px 14px;font-size:1rem;font-weight:800;cursor:pointer}
+      .btn-plain[disabled]{opacity:.35;cursor:default}
+      .btn-ok{background:var(--green-bg);color:var(--green);border:1.5px solid var(--green-line);cursor:default}
+      .btn[disabled]{opacity:.55;cursor:not-allowed}
+      .btn-block{width:100%}
+      .btn svg{flex:none}
+
+      /* Home intro */
+      .intro{margin-top:20px}
+      .intro h1{margin:0 0 8px;font-size:1.85rem;font-weight:900;line-height:1.4}
+      .intro h1 .hl{color:var(--red)}
+      .intro p{margin:0;font-size:1.06rem;color:var(--muted);font-weight:600}
+
+      h2.sec{font-size:1.32rem;font-weight:900;margin:32px 0 4px}
+      p.sec-sub{margin:0 0 14px;color:var(--muted);font-size:.96rem;font-weight:600}
+
+      /* ===== Story ===== */
+      .story{
+        margin-top:22px;background:var(--surface);border:1px solid var(--line);
+        border-radius:24px;padding:22px 20px 20px;box-shadow:var(--shadow);
+      }
+      .story-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+      .story-count{font-size:.9rem;font-weight:800;color:var(--muted)}
+      .story-count b{color:var(--red)}
+      .story-live{
+        font-size:.78rem;font-weight:800;color:var(--green);background:var(--green-bg);
+        border:1px solid var(--green-line);border-radius:999px;padding:3px 11px;
+        display:inline-flex;align-items:center;gap:6px;
+      }
+      .story-live i{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block}
+      .segs{display:flex;gap:6px;margin:12px 0 20px}
+      .seg{flex:1;height:7px;border-radius:99px;background:var(--line);transition:background .3s ease}
+      .seg.done{background:var(--red)}
+      .story-panel{display:none}
+      .story-panel.active{display:block;animation:fade .3s ease}
+      .story-panel h3{margin:0 0 10px;font-size:1.42rem;font-weight:900;line-height:1.4}
+      .story-panel>p{margin:0 0 16px;font-size:1.02rem;color:var(--muted);font-weight:600}
+      .story-panel>p b{color:var(--ink)}
+      .story-nav{display:flex;align-items:center;gap:10px;margin-top:20px}
+      .story-nav .spacer{flex:1}
+
+      /* Mini request card (inside story) */
+      .mini-req{
+        display:flex;gap:14px;align-items:flex-start;background:var(--surface2);
+        border:1.5px solid var(--line);border-radius:18px;padding:16px;margin-bottom:16px;
+      }
+      .bt-badge{
+        flex:none;width:66px;height:66px;border-radius:16px;background:var(--red-soft);
+        border:1.5px solid var(--red-mid);color:var(--red);
+        display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15;
+      }
+      .bt-badge b{font-size:1.35rem;font-weight:900;direction:ltr}
+      .bt-badge span{font-size:.62rem;font-weight:700;color:var(--muted)}
+      .mini-req .hosp{font-weight:800;font-size:1.08rem}
+      .mini-req .meta{font-size:.95rem;color:var(--muted);font-weight:600}
+      .mini-req .meta b{color:var(--ink)}
+
+      /* Verified visual (step 2) */
+      .verified-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:8px 0 4px}
+      .verified-ring{
+        width:92px;height:92px;border-radius:50%;background:var(--green-bg);
+        border:2px solid var(--green-line);display:grid;place-items:center;color:var(--green);margin-bottom:14px;
+      }
+      .check-list{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:4px}
+      .check-chip{
+        display:inline-flex;align-items:center;gap:6px;font-size:.92rem;font-weight:800;
+        background:var(--surface2);border:1.5px solid var(--line);border-radius:999px;padding:7px 14px;
+      }
+      .check-chip svg{color:var(--green);flex:none}
+
+      /* WhatsApp mock (step 3) */
+      .wa{border-radius:20px;overflow:hidden;border:1px solid var(--line);margin-bottom:14px}
+      .wa-head{background:var(--wa-head);color:#fff;padding:11px 14px;display:flex;align-items:center;gap:11px}
+      .wa-avatar{width:40px;height:40px;border-radius:50%;background:var(--red);display:grid;place-items:center;flex:none}
+      .wa-name{font-weight:800;font-size:1.02rem;line-height:1.25}
+      .wa-status{font-size:.78rem;opacity:.85;font-weight:600}
+      .wa-body{background:var(--wa-bg);padding:16px 12px 14px}
+      .wa-bubble{
+        background:var(--wa-bubble);border-radius:12px;padding:11px 13px 7px;max-width:94%;
+        box-shadow:0 1px 2px rgba(0,0,0,.13);font-size:1rem;line-height:1.75;font-weight:600;
+        white-space:pre-line;
+      }
+      .wa-time{display:flex;justify-content:flex-end;align-items:center;gap:4px;font-size:.72rem;color:var(--wa-meta);margin-top:3px;font-weight:600}
+      .wa-free{
+        margin-top:10px;font-size:.88rem;font-weight:800;color:var(--green);
+        background:var(--green-bg);border:1px solid var(--green-line);
+        border-radius:10px;padding:7px 12px;text-align:center;
+      }
+      .wa-replies{display:flex;gap:8px;margin-top:10px}
+      .wa-reply{
+        flex:1;background:var(--wa-bubble);color:var(--wa-link);border:0;border-radius:12px;
+        font-size:1rem;font-weight:800;padding:12px 8px;cursor:pointer;min-height:50px;
+        box-shadow:0 1px 2px rgba(0,0,0,.13);
+      }
+      .wa-reply:active{transform:scale(.98)}
+      .wa-note{
+        display:none;margin-top:10px;background:var(--wa-bubble);border-radius:12px;
+        padding:11px 13px;font-size:.95rem;font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,.13);
+      }
+      .wa-note.show{display:block}
+
+      /* Pledge instructions (step 4) */
+      .donor-chip{
+        display:flex;align-items:center;gap:12px;background:var(--surface2);
+        border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:14px;
+      }
+      .donor-avatar{
+        width:46px;height:46px;border-radius:50%;background:var(--red);color:#fff;flex:none;
+        display:grid;place-items:center;font-weight:900;font-size:1.15rem;
+      }
+      .donor-chip .who{font-weight:800;font-size:1.02rem;line-height:1.35}
+      .donor-chip .what{font-size:.9rem;color:var(--muted);font-weight:600}
+      .guide{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+      .guide-row{background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:13px 15px}
+      .guide-row .k{font-size:.85rem;font-weight:800;color:var(--red);margin-bottom:3px}
+      .guide-row .v{font-weight:700;font-size:1rem}
+      .guide-row .v.say{font-size:1.06rem;font-weight:800}
+      .privacy-line{
+        display:flex;gap:9px;align-items:flex-start;font-size:.95rem;font-weight:700;
+        background:var(--green-bg);border:1px solid var(--green-line);color:var(--green);
+        border-radius:14px;padding:11px 14px;
+      }
+      .privacy-line svg{flex:none;margin-top:3px}
+
+      /* Status timeline (step 5) */
+      .timeline{display:flex;flex-direction:column;margin:4px 0 16px}
+      .tl-row{display:flex;gap:13px;align-items:flex-start;position:relative;padding-bottom:20px}
+      .tl-row:last-child{padding-bottom:2px}
+      .tl-row::before{
+        content:"";position:absolute;inset-inline-start:15px;top:34px;bottom:2px;width:2.5px;
+        background:var(--line);border-radius:99px;
+      }
+      .tl-row:last-child::before{display:none}
+      .tl-dot{
+        flex:none;width:33px;height:33px;border-radius:50%;display:grid;place-items:center;z-index:1;
+        background:var(--surface2);border:2px solid var(--line);color:var(--muted);
+      }
+      .tl-row.done .tl-dot{background:var(--green);border-color:var(--green);color:#fff}
+      .tl-row.now .tl-dot{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 0 0 6px var(--red-soft)}
+      .tl-txt{padding-top:4px}
+      .tl-txt b{display:block;font-size:1.04rem}
+      .tl-txt span{font-size:.92rem;color:var(--muted);font-weight:600}
+
+      /* Done (step 6) */
+      .done-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:6px 0 2px}
+      .done-ring{
+        width:92px;height:92px;border-radius:50%;background:var(--green);color:#fff;
+        display:grid;place-items:center;margin-bottom:14px;box-shadow:0 10px 26px rgba(30,122,76,.35);
+      }
+      .fillbar{height:12px;border-radius:99px;background:var(--line);overflow:hidden;margin:6px 0 8px}
+      .fillbar i{display:block;height:100%;background:var(--green);border-radius:99px}
+      .fill-txt{text-align:center;font-weight:800;font-size:.98rem;margin-bottom:16px}
+      .end-card{
+        background:var(--red);color:#fff;border-radius:18px;padding:18px 16px;text-align:center;margin-top:4px;
+      }
+      .end-card p{margin:0 0 14px;font-size:1.14rem;font-weight:900;line-height:1.55}
+      .end-card .btn-white{background:#fff;color:var(--red-dark)}
+      .end-card .btn-ghosty{background:rgba(255,255,255,.14);color:#fff;border:1.5px solid rgba(255,255,255,.55)}
+
+      /* Trust strip */
+      .trust{
+        margin-top:22px;background:var(--surface);border:1px solid var(--line);
+        border-radius:22px;padding:8px 18px;
+      }
+      .trust-row{display:flex;align-items:center;gap:13px;padding:14px 0;border-bottom:1px solid var(--line)}
+      .trust-row:last-child{border-bottom:0}
+      .trust-ico{
+        flex:none;width:46px;height:46px;border-radius:14px;background:var(--red-soft);
+        border:1.5px solid var(--red-mid);color:var(--red);display:grid;place-items:center;
+      }
+      .trust-row b{font-size:1.04rem;display:block;line-height:1.45}
+      .trust-row span{font-size:.92rem;color:var(--muted);font-weight:600}
+
+      /* CTA card */
+      .cta-card{
+        margin-top:22px;background:var(--surface);border:1px solid var(--line);border-radius:22px;
+        padding:22px 20px;text-align:center;
+      }
+      .cta-card h2{margin:0 0 6px;font-size:1.35rem;font-weight:900}
+      .cta-card p{margin:0 0 18px;color:var(--muted);font-weight:600}
+      .cta-btns{display:flex;flex-direction:column;gap:10px}
+
+      /* ===== Request cards ===== */
+      .req-list{display:flex;flex-direction:column;gap:13px}
+      .req{
+        background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:17px 16px;
+      }
+      .req-top{display:flex;gap:14px;align-items:flex-start}
+      .req-body{flex:1;min-width:0}
+      .req-hosp{font-weight:800;font-size:1.07rem;margin-bottom:2px}
+      .req-meta{font-size:.94rem;color:var(--muted);font-weight:600}
+      .req-meta b{color:var(--ink)}
+      .verified-badge{
+        display:inline-flex;align-items:center;gap:5px;font-size:.8rem;font-weight:800;
+        color:var(--green);background:var(--green-bg);border:1px solid var(--green-line);
+        border-radius:999px;padding:3px 10px;margin-top:8px;
+      }
+      .urgent-badge{
+        display:inline-flex;align-items:center;font-size:.8rem;font-weight:800;
+        color:#fff;background:var(--red);border-radius:999px;padding:3px 10px;margin-top:8px;
+        margin-inline-start:6px;
+      }
+      .req-actions{display:flex;gap:9px;margin-top:14px}
+      .req-actions .btn{flex:1;padding-inline:8px;font-size:1rem}
+      .req-actions .btn-share{flex:0 0 auto}
+
+      /* ===== Share sheet ===== */
+      .sheet-overlay{
+        position:fixed;inset:0;z-index:60;background:var(--overlay);
+        display:none;align-items:flex-end;justify-content:center;
+      }
+      .sheet-overlay.open{display:flex}
+      .sheet{
+        background:var(--surface);color:var(--ink);width:100%;max-width:560px;max-height:92vh;overflow-y:auto;
+        border-radius:24px 24px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom));
+        animation:slideup .25s ease;
+      }
+      @keyframes slideup{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}
+      @media (min-width:640px){
+        .sheet-overlay{align-items:center;padding:20px}
+        .sheet{border-radius:24px}
+      }
+      .sheet-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
+      .sheet-head h2{margin:0;font-size:1.3rem;font-weight:900}
+      .sheet-sub{margin:0 0 16px;color:var(--muted);font-size:.95rem;font-weight:600}
+      .sheet-close{
+        flex:none;width:44px;height:44px;min-height:44px;border-radius:50%;border:1.5px solid var(--line);
+        background:var(--surface2);color:var(--ink);cursor:pointer;display:grid;place-items:center;
+      }
+      .share-card{
+        border:2px solid var(--red);border-radius:20px;overflow:hidden;margin-bottom:14px;background:var(--surface);
+      }
+      .share-head{
+        background:var(--red);color:#fff;padding:13px 16px;display:flex;align-items:center;gap:10px;
+      }
+      .share-head .mark{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.18);display:grid;place-items:center;flex:none}
+      .share-head b{font-size:1.12rem}
+      .share-head span{display:block;font-size:.8rem;opacity:.9;font-weight:600}
+      .share-body{padding:18px 16px 16px;text-align:center}
+      .share-type{font-size:3rem;font-weight:900;color:var(--red);direction:ltr;line-height:1.1}
+      .share-type small{display:block;font-size:.85rem;color:var(--muted);font-weight:700;direction:rtl}
+      .share-lines{margin:12px 0 4px;font-size:1.02rem;font-weight:700;line-height:1.9}
+      .share-lines .urg{color:var(--red);font-weight:900}
+      .share-foot{
+        border-top:1.5px dashed var(--line);padding:11px 16px;text-align:center;
+        font-size:.88rem;font-weight:700;color:var(--muted);
+      }
+      .share-note{
+        background:var(--surface2);border:1.5px solid var(--line);border-radius:14px;
+        padding:12px 15px;font-size:.95rem;font-weight:700;margin-bottom:14px;
+      }
+      .copy-msg{display:none;margin-top:10px;text-align:center;font-weight:800;font-size:.93rem;color:var(--green)}
+      .copy-msg.show{display:block}
+
+      /* ===== Donor form ===== */
+      .form-card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:22px 19px;margin-top:16px}
+      .form-fields{display:flex;flex-direction:column;gap:17px}
+      .field label{display:block;font-size:.97rem;font-weight:800;margin-bottom:7px}
+      .field select,.field input{
+        width:100%;border:1.5px solid var(--line);border-radius:13px;background:var(--surface);
+        color:var(--ink);padding:11px 13px;font-size:1rem;font-weight:600;
+      }
+      .field select:focus,.field input:focus{outline:2px solid var(--red);outline-offset:1px;border-color:var(--red)}
+      .field .hint{font-size:.85rem;color:var(--muted);margin-top:5px;font-weight:600}
+      .radio-row{display:flex;gap:8px;flex-wrap:wrap}
+      .radio-chip{position:relative}
+      .radio-chip input{position:absolute;opacity:0;inset:0;cursor:pointer;min-height:0}
+      .radio-chip span{
+        display:inline-flex;align-items:center;min-height:48px;padding:8px 18px;border-radius:13px;
+        border:1.5px solid var(--line);background:var(--surface);font-weight:700;font-size:.97rem;cursor:pointer;
+      }
+      .radio-chip input:checked + span{background:var(--red);border-color:var(--red);color:#fff}
+      .radio-chip input:focus-visible + span{outline:2px solid var(--red);outline-offset:2px}
+      .form-msg{border-radius:14px;padding:13px 16px;font-weight:700;font-size:.95rem;margin-top:15px;display:none}
+      .form-msg.err{display:block;background:var(--red-soft);color:var(--red);border:1px solid var(--red-mid)}
+
+      .success-card{
+        display:none;margin-top:18px;background:var(--surface);border:2px solid var(--green-line);
+        border-radius:22px;padding:22px 19px;text-align:center;
+      }
+      .success-card.show{display:block;animation:fade .3s ease}
+      .success-ring{
+        width:74px;height:74px;border-radius:50%;background:var(--green);color:#fff;
+        display:grid;place-items:center;margin:0 auto 12px;
+      }
+      .success-card h3{margin:0 0 6px;font-size:1.4rem;font-weight:900}
+      .success-elig{font-size:1.16rem;font-weight:900;color:var(--red);margin:0 0 6px}
+      .success-disclaimer{font-size:.88rem;color:var(--muted);margin:0 0 18px;font-weight:600}
+      .avail{
+        display:flex;align-items:center;gap:13px;text-align:start;background:var(--surface2);
+        border:1.5px solid var(--line);border-radius:16px;padding:14px 15px;
+      }
+      .avail-txt{flex:1;min-width:0}
+      .avail-txt b{display:block;font-size:1.02rem}
+      .avail-txt span{font-size:.88rem;color:var(--muted);font-weight:600}
+      .switch{
+        flex:none;width:60px;height:34px;min-height:34px;border-radius:99px;border:0;cursor:pointer;
+        background:var(--line);position:relative;transition:background .2s ease;padding:0;
+      }
+      .switch::after{
+        content:"";position:absolute;top:4px;inset-inline-start:4px;width:26px;height:26px;border-radius:50%;
+        background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25);transition:transform .2s ease;
+      }
+      .switch[aria-checked="true"]{background:var(--green)}
+      .switch[aria-checked="true"]::after{transform:translateX(-26px)}
+
+      /* Bottom nav — 3 tabs */
+      .bottom-nav{
+        position:fixed;bottom:0;inset-inline:0;z-index:50;background:var(--nav-bg);
+        backdrop-filter:blur(10px);border-top:1.5px solid var(--line);
+        padding-bottom:env(safe-area-inset-bottom);
+      }
+      .bottom-nav .inner{max-width:700px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
+      .nav-btn{
+        border:0;background:none;cursor:pointer;color:var(--muted);
+        display:flex;flex-direction:column;align-items:center;gap:2px;
+        padding:9px 2px 8px;font-size:.79rem;font-weight:800;min-height:60px;justify-content:center;
+      }
+      .nav-btn svg{width:23px;height:23px}
+      .nav-btn.active{color:var(--red)}
+
+      footer.foot{margin-top:38px;text-align:center;color:var(--muted);font-size:.86rem;font-weight:600;line-height:1.9}
+
+      @media (prefers-reduced-motion: reduce){
+        .screen.active,.story-panel.active,.sheet,.success-card.show{animation:none}
+        html{scroll-behavior:auto}
+        .seg,.switch,.switch::after{transition:none}
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="demo-banner" role="note">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 2.5 20h19L12 3Z" fill="currentColor" opacity=".25"/><path d="M12 3 2.5 20h19L12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 9.5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17.2" r="1.2" fill="currentColor"/></svg>
+      نسخة تجريبية — كل البيانات وهمية
+    </div>
+
+    <div class="wrap">
+      <div class="brand-row">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3.2C12 3.2 5.8 10 5.8 14.4a6.2 6.2 0 0 0 12.4 0C18.2 10 12 3.2 12 3.2Z" fill="#fff"/><path d="M9.2 14.6a2.9 2.9 0 0 0 2 2.9" stroke="#b3122e" stroke-width="1.7" stroke-linecap="round"/></svg>
+        </div>
+        <div>
+          <div class="brand-name">دمكم</div>
+          <div class="brand-sub">شبكة تنسيق التبرع بالدم — مش مجرد قايمة متبرعين</div>
+        </div>
+      </div>
+
+      <!-- ============ الرئيسية ============ -->
+      <section class="screen active" id="scr-home">
+        <div class="intro">
+          <h1>إزاي نقطة دم <span class="hl">بتوصل للي محتاجها؟</span></h1>
+          <p>دي قصة طلب واحد — امشِ معاه خطوة بخطوة، من أول ما اتنشر لحد ما التبرع اتأكد.</p>
+        </div>
+
+        <div class="story" id="story">
+          <div class="story-top">
+            <span class="story-count">الخطوة <b id="story-num">١</b> من ٦</span>
+            <span class="story-live"><i></i>قصة طلب واحد</span>
+          </div>
+          <div class="segs" aria-hidden="true">
+            <span class="seg done"></span><span class="seg"></span><span class="seg"></span>
+            <span class="seg"></span><span class="seg"></span><span class="seg"></span>
+          </div>
+
+          <!-- خطوة ١ -->
+          <div class="story-panel active" data-step="1">
+            <h3>طلب اتنشر</h3>
+            <div class="mini-req">
+              <div class="bt-badge"><b>O-</b><span>فصيلة الدم</span></div>
+              <div>
+                <div class="hosp">مستشفى القصر العيني</div>
+                <div class="meta">القاهرة · محتاجين <b>٣ أكياس</b></div>
+                <div class="meta">محتاج الدم <b>خلال ٦ ساعات</b></div>
+              </div>
+            </div>
+            <p>عيلة المريض نشرت الطلب من موبايلها في أقل من دقيقة — <b>فصيلة الدم وعدد الأكياس والمستشفى</b>، وخلاص. من غير لف على جروبات ولا نشر أرقام تليفونات.</p>
+          </div>
+
+          <!-- خطوة ٢ -->
+          <div class="story-panel" data-step="2">
+            <h3>الطلب اتوثّق</h3>
+            <div class="verified-hero">
+              <div class="verified-ring">
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5 10 18 19.5 6.5"/></svg>
+              </div>
+            </div>
+            <p>قبل ما الطلب يوصل لأي متبرع، <b>فريق دمكم بيراجعه ويتأكد إنه حقيقي</b>. كده المتبرع بيوصله طلبات موثوقة بس، ومفيش وقت بيضيع في طلبات وهمية.</p>
+            <div class="check-list">
+              <span class="check-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5 10 18 19.5 6.5"/></svg>اتأكدنا من المستشفى</span>
+              <span class="check-chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5 10 18 19.5 6.5"/></svg>اتأكدنا من الفصيلة والكمية</span>
+            </div>
+          </div>
+
+          <!-- خطوة ٣ -->
+          <div class="story-panel" data-step="3">
+            <h3>وصلت رسالة واتساب للمتبرع</h3>
+            <p>الرسالة بتروح بس للمتبرعين اللي <b>فصيلتهم تنفع وقريبين من المستشفى</b> — مش بتتبعت لمدينة كاملة. دي الرسالة اللي وصلت لأحمد، متبرع فصيلته O- من القاهرة:</p>
+            <div class="wa">
+              <div class="wa-head">
+                <div class="wa-avatar" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3.2C12 3.2 5.8 10 5.8 14.4a6.2 6.2 0 0 0 12.4 0C18.2 10 12 3.2 12 3.2Z" fill="#fff"/></svg>
+                </div>
+                <div>
+                  <div class="wa-name">دمكم</div>
+                  <div class="wa-status">متصل الآن</div>
+                </div>
+              </div>
+              <div class="wa-body">
+                <div class="wa-bubble">🩸 طلب تبرع بالدم بالقرب منك
+فيه طلب محتاج متبرعين من فصيلة O-
+المستشفى: القصر العيني
+الكمية: ٣ أكياس
+هل أنت متاح ومهتم بالمساعدة؟
+                  <div class="wa-time">٩:٤١ ص
+                    <svg width="17" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M1 6.5 4.5 10 11 1.5" stroke="#53bdeb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 6.5 10.5 10 17 1.5" stroke="#53bdeb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
+                </div>
+                <div class="wa-free">التبرع تطوعي ومجاني بالكامل</div>
+                <div class="wa-replies">
+                  <button class="wa-reply" id="wa-yes" type="button">أنا متاح</button>
+                  <button class="wa-reply" id="wa-no" type="button">مش متاح</button>
+                </div>
+                <div class="wa-note" id="wa-note">تمام، مفيش أي مشكلة خالص — ومفيش أي حاجة هتتخصم منك. هنبعتلك لما ييجي طلب تاني يناسبك.</div>
+              </div>
+            </div>
+            <p style="margin-bottom:0">جرّب بنفسك: دوس <b>«أنا متاح»</b> وشوف بيحصل إيه.</p>
+          </div>
+
+          <!-- خطوة ٤ -->
+          <div class="story-panel" data-step="4">
+            <h3>المتبرع قال: أقدر أروح</h3>
+            <div class="donor-chip">
+              <div class="donor-avatar" aria-hidden="true">أ</div>
+              <div>
+                <div class="who">أحمد — متبرع O-</div>
+                <div class="what">أكد إنه رايح · التعهد اتسجل في الطلب</div>
+              </div>
+            </div>
+            <p>أول ما أحمد أكد، وصله على طول <b>يروح فين ويقول إيه</b> — من غير ما رقم تليفونه يظهر لأي حد:</p>
+            <div class="guide">
+              <div class="guide-row">
+                <div class="k">تروح فين؟</div>
+                <div class="v">بنك الدم — مستشفى القصر العيني، القاهرة</div>
+              </div>
+              <div class="guide-row">
+                <div class="k">تقول إيه على الاستقبال؟</div>
+                <div class="v say">«أنا متبرع من دمكم، جاي أتبرع بالدم لطلب النهاردة»</div>
+              </div>
+            </div>
+            <div class="privacy-line">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 5.8v5.4c0 4.3 2.9 7.4 7 9 4.1-1.6 7-4.7 7-9V5.8L12 3Z"/><path d="m9 11.6 2.2 2.2 4-4.2"/></svg>
+              رقم تليفون أحمد ما ظهرش لحد — لا للعيلة ولا لأي حد تاني.
+            </div>
+          </div>
+
+          <!-- خطوة ٥ -->
+          <div class="story-panel" data-step="5">
+            <h3>المتبرع وصل بنك الدم</h3>
+            <p>حالة التعهد بتتحدث خطوة بخطوة، <b>والعيلة شايفاها ومطمنة</b> — من غير مكالمات ولا تبادل أرقام:</p>
+            <div class="timeline">
+              <div class="tl-row done">
+                <span class="tl-dot"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5 10 18 19.5 6.5"/></svg></span>
+                <div class="tl-txt"><b>أحمد أكد إنه جاي</b><span>التعهد اتسجل في الطلب</span></div>
+              </div>
+              <div class="tl-row done">
+                <span class="tl-dot"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5 10 18 19.5 6.5"/></svg></span>
+                <div class="tl-txt"><b>في الطريق</b><span>أحمد اتحرك لبنك الدم</span></div>
+              </div>
+              <div class="tl-row now">
+                <span class="tl-dot"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3.5c0 0-6 6.6-6 10.7a6 6 0 0 0 12 0C18 10.1 12 3.5 12 3.5Z"/></svg></span>
+                <div class="tl-txt"><b>وصل بنك الدم</b><span>أحمد وصل وبدأ إجراءات التبرع</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- خطوة ٦ -->
+          <div class="story-panel" data-step="6">
+            <h3>تم التبرع</h3>
+            <div class="done-hero">
+              <div class="done-ring">
+                <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5 10 18 19.5 6.5"/></svg>
+              </div>
+            </div>
+            <p>أحمد ومتبرعين تانيين اتبرعوا، وبنك الدم أكد، <b>والعيلة أكدت الاستلام</b>. الطلب اكتمل واتقفل، ومحدش هيستلم رسايل زيادة عنه.</p>
+            <div class="fillbar" aria-hidden="true"><i style="width:100%"></i></div>
+            <div class="fill-txt">اكتمل الطلب: ٣ من ٣ أكياس</div>
+            <div class="end-card">
+              <p>كده دمكم بيشتغل: من الطلب لحد التبرع المؤكد</p>
+              <button class="btn btn-white btn-block" data-goto="requests" style="margin-bottom:10px">شوف الطلبات اللي محتاجة دم دلوقتي</button>
+              <button class="btn btn-ghosty btn-block" id="story-restart" type="button">عيد القصة من الأول</button>
+            </div>
+          </div>
+
+          <div class="story-nav" id="story-nav">
+            <button class="btn-plain" id="story-prev" type="button" disabled>اللي قبله</button>
+            <span class="spacer"></span>
+            <button class="btn btn-red" id="story-next" type="button">
+              التالي
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="trust" aria-label="ليه دمكم موثوق">
+          <div class="trust-row">
+            <span class="trust-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 5.8v5.4c0 4.3 2.9 7.4 7 9 4.1-1.6 7-4.7 7-9V5.8L12 3Z"/><path d="m9 11.6 2.2 2.2 4-4.2"/></svg></span>
+            <div><b>مفيش أرقام تليفونات بتظهر لأي حد</b><span>التواصل كله بيتم جوه دمكم.</span></div>
+          </div>
+          <div class="trust-row">
+            <span class="trust-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5C7 16.5 3.5 13.2 3.5 9.3A4.6 4.6 0 0 1 12 6.7a4.6 4.6 0 0 1 8.5 2.6c0 3.9-3.5 7.2-8.5 11.2Z"/></svg></span>
+            <div><b>التبرع تطوعي ومجاني دايمًا</b><span>مفيش فلوس بتتطلب ولا بتتدفع على دمكم.</span></div>
+          </div>
+          <div class="trust-row">
+            <span class="trust-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="m8.8 12.4 2.3 2.3 4.2-4.6"/></svg></span>
+            <div><b>كل طلب بيتأكد قبل ما يتنشر</b><span>مراجعة بشرية لكل طلب قبل ما يوصل للمتبرعين.</span></div>
+          </div>
+        </div>
+
+        <div class="cta-card">
+          <h2>جاهز تساعد؟</h2>
+          <p>تسجيلك بياخد دقيقة واحدة، وممكن ينقذ حياة.</p>
+          <div class="cta-btns">
+            <button class="btn btn-red btn-block" data-goto="donor">سجّل كمتبرع</button>
+            <button class="btn btn-line btn-block" data-goto="requests">شوف الطلبات المفتوحة</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ الطلبات ============ -->
+      <section class="screen" id="scr-requests">
+        <h2 class="sec">الطلبات المفتوحة</h2>
+        <p class="sec-sub">كل طلب هنا اتراجع واتأكد قبل ما يتنشر. لو فصيلتك تنفع، دوس «أقدر أتبرع» — أو شارك الطلب عشان يوصل لحد تاني يقدر.</p>
+        <div class="req-list" id="req-list"></div>
+      </section>
+
+      <!-- ============ سجّل كمتبرع ============ -->
+      <section class="screen" id="scr-donor">
+        <h2 class="sec">سجّل كمتبرع</h2>
+        <p class="sec-sub">كام حاجة بسيطة، وهنبعتلك بس الطلبات اللي فصيلتك تنفعها وقريبة منك.</p>
+
+        <form class="form-card" id="donor-form" novalidate>
+          <div class="form-fields">
+            <div class="field">
+              <label for="d-name">اسمك الأول</label>
+              <input id="d-name" type="text" autocomplete="given-name" placeholder="مثال: أحمد" />
+            </div>
+            <div class="field">
+              <label for="d-type">فصيلة دمك</label>
+              <select id="d-type" required>
+                <option value="">اختر الفصيلة…</option>
+                <option value="unknown">مش عارف فصيلتي</option>
+              </select>
+              <div class="hint">لو مش عارفها، سجّل عادي — هنساعدك تعرفها، ومش هتوصلك طلبات لحد ما تتأكد.</div>
+            </div>
+            <div class="field">
+              <label for="d-gov">المحافظة</label>
+              <select id="d-gov" required>
+                <option value="">اختر المحافظة…</option>
+                <option value="القاهرة">القاهرة</option>
+                <option value="الجيزة">الجيزة</option>
+                <option value="الإسكندرية">الإسكندرية</option>
+                <option value="الدقهلية">الدقهلية</option>
+                <option value="الغربية">الغربية</option>
+                <option value="الشرقية">الشرقية</option>
+                <option value="أسيوط">أسيوط</option>
+                <option value="أسوان">أسوان</option>
+                <option value="other">محافظة تانية</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>النوع</label>
+              <div class="radio-row">
+                <label class="radio-chip"><input type="radio" name="d-sex" value="male" /><span>ذكر</span></label>
+                <label class="radio-chip"><input type="radio" name="d-sex" value="female" /><span>أنثى</span></label>
+                <label class="radio-chip"><input type="radio" name="d-sex" value="na" /><span>أفضل عدم القول</span></label>
+              </div>
+              <div class="hint">بنستخدمه بس عشان نحسب معاد تبرعك الجاي صح (الرجالة كل ٣ شهور، والستات كل ٤ شهور).</div>
+            </div>
+            <div class="field">
+              <label for="d-last">آخر مرة اتبرعت إمتى؟ (اختياري)</label>
+              <input id="d-last" type="date" />
+              <div class="hint">سيبها فاضية لو عمرك ما اتبرعت قبل كده.</div>
+            </div>
+          </div>
+          <div class="form-msg" id="donor-msg" role="status"></div>
+          <div style="margin-top:18px">
+            <button type="submit" class="btn btn-red btn-block">سجّلني</button>
+          </div>
+        </form>
+
+        <div class="success-card" id="donor-success" aria-live="polite">
+          <div class="success-ring">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5 10 18 19.5 6.5"/></svg>
+          </div>
+          <h3 id="ds-title">تم تسجيلك</h3>
+          <p class="success-elig" id="ds-elig"></p>
+          <p class="success-disclaimer">ده معاد تقديري — بنك الدم هو اللي بيقرر إنك تقدر تتبرع وقت ما تروح.</p>
+          <div class="avail">
+            <div class="avail-txt">
+              <b id="avail-state">متاح دلوقتي</b>
+              <span id="avail-sub">هتوصلك طلبات قريبة منك وفصيلتها تنفعك.</span>
+            </div>
+            <button class="switch" id="avail-switch" type="button" role="switch" aria-checked="true" aria-label="التوفر للتبرع"></button>
+          </div>
+        </div>
+      </section>
+
+      <footer class="foot">
+        دم كامل فقط في الأول · التبرع تطوعي ومجاني دايمًا · أرقام التليفونات مش بتظهر لأي حد<br />
+        دمكم — نسخة تجريبية للعرض فقط، وكل الأسماء والطلبات وهمية
+      </footer>
+    </div>
+
+    <!-- ============ كارت مشاركة الطلب ============ -->
+    <div class="sheet-overlay" id="share-overlay">
+      <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="share-title">
+        <div class="sheet-head">
+          <h2 id="share-title">شارك الطلب</h2>
+          <button class="sheet-close" id="share-close" aria-label="اقفل">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
+          </button>
+        </div>
+        <p class="sheet-sub">ده الكارت اللي الناس هتشوفه لما تشارك الطلب:</p>
+
+        <div class="share-card" id="share-card"></div>
+
+        <div class="share-note">الكارت ده هو اللي هيتبعت على فيسبوك وواتساب بدل الفوروردات اللي فيها أرقام تليفونات — شكله واضح، وبيوصل للي يقدر يساعد فعلًا.</div>
+
+        <button class="btn btn-line btn-block" id="copy-btn" type="button">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          انسخ نص المشاركة
+        </button>
+        <div class="copy-msg" id="copy-msg" role="status"></div>
+      </div>
+    </div>
+
+    <!-- Bottom nav — 3 tabs -->
+    <nav class="bottom-nav" aria-label="التنقل الرئيسي">
+      <div class="inner">
+        <button class="nav-btn active" data-goto="home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9h13v-9"/></svg>
+          الرئيسية
+        </button>
+        <button class="nav-btn" data-goto="requests">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5c0 0-6 6.6-6 10.7a6 6 0 0 0 12 0C18 10.1 12 3.5 12 3.5Z"/></svg>
+          الطلبات
+        </button>
+        <button class="nav-btn" data-goto="donor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.4-3.6 4.2-5.4 7.5-5.4s6.1 1.8 7.5 5.4"/></svg>
+          سجّل كمتبرع
+        </button>
+      </div>
+    </nav>
+
+    <script>
+      "use strict";
+      var BLOOD_TYPES = ["O-","O+","A-","A+","B-","B+","AB-","AB+"];
+      var H = 3600 * 1000;
+      var now = Date.now();
+
+      /* Synthetic demo requests (reset on reload) */
+      var requests = [
+        { id: 1, type: "O-",  units: 3, pledged: 1, hosp: "مستشفى النور التخصصي", gov: "القاهرة",    neededBy: now + 4*H,   helped: false },
+        { id: 2, type: "B-",  units: 2, pledged: 0, hosp: "مستشفى النيل",          gov: "الجيزة",     neededBy: now + 5.5*H, helped: false },
+        { id: 3, type: "A+",  units: 4, pledged: 2, hosp: "مستشفى الشفاء العام",   gov: "القاهرة",    neededBy: now + 16*H,  helped: false },
+        { id: 4, type: "AB-", units: 2, pledged: 0, hosp: "مستشفى الهرم التخصصي",  gov: "الجيزة",     neededBy: now + 21*H,  helped: false },
+        { id: 5, type: "O+",  units: 5, pledged: 3, hosp: "مستشفى السلام العام",   gov: "الإسكندرية", neededBy: now + 44*H,  helped: false },
+        { id: 6, type: "A-",  units: 3, pledged: 1, hosp: "مستشفى الصفا العام",    gov: "الجيزة",     neededBy: now + 63*H,  helped: false }
+      ];
+      var shareId = null;
+
+      function $(id){ return document.getElementById(id); }
+      function arNum(n){ return String(n).replace(/\d/g, function(d){ return "٠١٢٣٤٥٦٧٨٩"[+d]; }); }
+      function timeLeft(neededBy){
+        var ms = neededBy - Date.now();
+        if (ms <= 0) return "المعاد عدّى";
+        var totalMin = Math.round(ms / 60000);
+        if (totalMin >= 1440){
+          var d = Math.floor(totalMin / 1440), h = Math.floor((totalMin % 1440) / 60);
+          return "فاضل " + arNum(d) + (d === 1 ? " يوم" : " أيام") + (h > 0 ? " و" + arNum(h) + " ساعة" : "");
+        }
+        if (totalMin >= 60){
+          var hh = Math.floor(totalMin / 60), mm = totalMin % 60;
+          return "فاضل " + arNum(hh) + " ساعة" + (mm > 0 ? " و" + arNum(mm) + " دقيقة" : "");
+        }
+        return "فاضل " + arNum(Math.max(totalMin, 1)) + " دقيقة";
+      }
+      function urgencyText(neededBy){
+        var h = (neededBy - Date.now()) / H;
+        if (h <= 6) return "محتاج الدم خلال ساعات";
+        if (h <= 24) return "محتاج الدم النهاردة";
+        return "محتاج الدم خلال أيام";
+      }
+      function isUrgent(neededBy){ return (neededBy - Date.now()) / H <= 6; }
+      function fmtDate(d){
+        try { return d.toLocaleDateString("ar-EG", { weekday: "long", day: "numeric", month: "long", year: "numeric" }); }
+        catch(e){ return d.toDateString(); }
+      }
+      function addMonthsClamped(date, months){
+        var target = new Date(date.getFullYear(), date.getMonth() + months, 1);
+        var lastDay = new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate();
+        target.setDate(Math.min(date.getDate(), lastDay));
+        return target;
+      }
+
+      /* ---------- Navigation (3 tabs) ---------- */
+      function gotoScreen(name){
+        document.querySelectorAll(".screen").forEach(function(s){ s.classList.remove("active"); });
+        $("scr-" + name).classList.add("active");
+        document.querySelectorAll(".nav-btn").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-goto") === name); });
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      document.querySelectorAll("[data-goto]").forEach(function(el){
+        el.addEventListener("click", function(){ gotoScreen(el.getAttribute("data-goto")); });
+      });
+
+      /* ---------- Story walkthrough ---------- */
+      var AR_STEPS = ["١","٢","٣","٤","٥","٦"];
+      var storyStep = 1;
+      function renderStory(){
+        document.querySelectorAll(".story-panel").forEach(function(p){
+          p.classList.toggle("active", parseInt(p.getAttribute("data-step"), 10) === storyStep);
+        });
+        document.querySelectorAll(".seg").forEach(function(s, i){ s.classList.toggle("done", i < storyStep); });
+        $("story-num").textContent = AR_STEPS[storyStep - 1];
+        $("story-prev").disabled = storyStep === 1;
+        $("story-nav").style.display = storyStep === 6 ? "none" : "flex";
+      }
+      $("story-next").addEventListener("click", function(){ if (storyStep < 6){ storyStep++; renderStory(); } });
+      $("story-prev").addEventListener("click", function(){ if (storyStep > 1){ storyStep--; renderStory(); } });
+      $("story-restart").addEventListener("click", function(){
+        storyStep = 1;
+        $("wa-note").classList.remove("show");
+        renderStory();
+        $("story").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      $("wa-yes").addEventListener("click", function(){ storyStep = 4; renderStory(); });
+      $("wa-no").addEventListener("click", function(){ $("wa-note").classList.add("show"); });
+
+      /* ---------- Request cards ---------- */
+      var CHECK_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5 10 18 19.5 6.5"/></svg>';
+      var SHARE_SVG = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.6"/><circle cx="17.5" cy="5.5" r="2.6"/><circle cx="17.5" cy="18.5" r="2.6"/><path d="m8.4 10.8 6.8-4M8.4 13.2l6.8 4"/></svg>';
+      function sortedRequests(){
+        return requests.slice().sort(function(a, b){ return a.neededBy - b.neededBy; });
+      }
+      function buildCard(r){
+        var remaining = r.units - r.pledged;
+        var card = document.createElement("article");
+        card.className = "req";
+        var btnHtml;
+        if (r.helped){
+          btnHtml = '<button class="btn btn-ok" disabled>شكرًا ليك — اتسجّل إنك رايح</button>';
+        } else if (remaining <= 0){
+          btnHtml = '<button class="btn btn-ok" disabled>اكتمل الطلب — شكرًا لكل اللي ساعدوا</button>';
+        } else {
+          btnHtml = '<button class="btn btn-red" data-help="' + r.id + '">أقدر أتبرع</button>';
+        }
+        card.innerHTML =
+          '<div class="req-top">' +
+            '<div class="bt-badge"><b>' + r.type + '</b><span>فصيلة الدم</span></div>' +
+            '<div class="req-body">' +
+              '<div class="req-hosp">' + r.hosp + '</div>' +
+              '<div class="req-meta">' + r.gov + ' · <b>' + timeLeft(r.neededBy) + '</b></div>' +
+              '<div class="req-meta">لسه محتاجين <b>' + arNum(Math.max(remaining, 0)) + ' كيس</b> من أصل ' + arNum(r.units) + '</div>' +
+              '<span class="verified-badge">' + CHECK_SVG + 'طلب موثّق</span>' +
+              (isUrgent(r.neededBy) ? '<span class="urgent-badge">عاجل</span>' : '') +
+            '</div>' +
+          '</div>' +
+          '<div class="req-actions">' + btnHtml +
+            '<button class="btn btn-line btn-share" data-share="' + r.id + '" aria-label="شارك الطلب">' + SHARE_SVG + 'شارك الطلب</button>' +
+          '</div>';
+        return card;
+      }
+      function renderRequests(){
+        var box = $("req-list");
+        box.innerHTML = "";
+        sortedRequests().forEach(function(r){ box.appendChild(buildCard(r)); });
+        box.querySelectorAll("[data-help]").forEach(function(b){
+          b.addEventListener("click", function(){
+            var r = requests.find(function(x){ return x.id === parseInt(b.getAttribute("data-help"), 10); });
+            if (r && !r.helped && r.pledged < r.units){ r.pledged++; r.helped = true; }
+            renderRequests();
+          });
+        });
+        box.querySelectorAll("[data-share]").forEach(function(b){
+          b.addEventListener("click", function(){ openShare(parseInt(b.getAttribute("data-share"), 10)); });
+        });
+      }
+
+      /* ---------- Share card sheet ---------- */
+      function shareText(r){
+        var remaining = Math.max(r.units - r.pledged, 0);
+        return "🩸 طلب تبرع بالدم — دمكم\n" +
+          "الفصيلة المطلوبة: " + r.type + "\n" +
+          "محتاجين: " + arNum(remaining) + " كيس\n" +
+          "المستشفى: " + r.hosp + " — " + r.gov + "\n" +
+          urgencyText(r.neededBy) + "\n" +
+          "تقدر تساعد؟ سجّل في دمكم من غير ما رقم تليفونك يظهر لحد.\n" +
+          "التبرع تطوعي ومجاني بالكامل.";
+      }
+      function openShare(id){
+        var r = requests.find(function(x){ return x.id === id; });
+        if (!r) return;
+        shareId = id;
+        var remaining = Math.max(r.units - r.pledged, 0);
+        var helped = r.helped, full = remaining <= 0;
+        var btnHtml;
+        if (helped){
+          btnHtml = '<button class="btn btn-ok btn-block" disabled>شكرًا ليك — اتسجّل إنك رايح</button>';
+        } else if (full){
+          btnHtml = '<button class="btn btn-ok btn-block" disabled>اكتمل الطلب</button>';
+        } else {
+          btnHtml = '<button class="btn btn-red btn-block" id="share-help">أقدر أتبرع</button>';
+        }
+        $("share-card").innerHTML =
+          '<div class="share-head">' +
+            '<span class="mark"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M12 3.2C12 3.2 5.8 10 5.8 14.4a6.2 6.2 0 0 0 12.4 0C18.2 10 12 3.2 12 3.2Z" fill="#fff"/></svg></span>' +
+            '<div><b>دمكم</b><span>طلب تبرع بالدم — موثّق</span></div>' +
+          '</div>' +
+          '<div class="share-body">' +
+            '<div class="share-type">' + r.type + '<small>فصيلة الدم المطلوبة</small></div>' +
+            '<div class="share-lines">' +
+              'محتاجين <b>' + arNum(remaining) + ' كيس</b><br />' +
+              r.hosp + ' — ' + r.gov + '<br />' +
+              '<span class="urg">' + urgencyText(r.neededBy) + '</span>' +
+            '</div>' +
+            btnHtml +
+          '</div>' +
+          '<div class="share-foot">التواصل بيتم جوه دمكم — مفيش أرقام تليفونات بتظهر لأي حد</div>';
+        $("copy-msg").className = "copy-msg";
+        $("share-overlay").classList.add("open");
+        document.body.style.overflow = "hidden";
+        var hb = $("share-help");
+        if (hb){
+          hb.addEventListener("click", function(){
+            if (r.pledged < r.units){ r.pledged++; }
+            r.helped = true;
+            renderRequests();
+            closeShare();
+            gotoScreen("requests");
+          });
+        }
+      }
+      function closeShare(){
+        $("share-overlay").classList.remove("open");
+        document.body.style.overflow = "";
+      }
+      $("share-close").addEventListener("click", closeShare);
+      $("share-overlay").addEventListener("click", function(ev){ if (ev.target === this) closeShare(); });
+      document.addEventListener("keydown", function(ev){ if (ev.key === "Escape") closeShare(); });
+      $("copy-btn").addEventListener("click", function(){
+        var r = requests.find(function(x){ return x.id === shareId; });
+        if (!r) return;
+        var msg = $("copy-msg");
+        function done(ok){
+          msg.textContent = ok ? "اتنسخ النص — الصقه في واتساب أو فيسبوك وابعت" : "النسخ ما اشتغلش هنا — خد لقطة شاشة للكارت وابعته";
+          msg.classList.add("show");
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(shareText(r)).then(function(){ done(true); }, function(){ done(false); });
+        } else { done(false); }
+      });
+
+      /* ---------- Donor registration ---------- */
+      BLOOD_TYPES.forEach(function(t){
+        var o = document.createElement("option"); o.value = t; o.textContent = t; $("d-type").appendChild(o);
+      });
+      $("donor-form").addEventListener("submit", function(ev){
+        ev.preventDefault();
+        var msg = $("donor-msg"); msg.className = "form-msg";
+        var name = $("d-name").value.trim();
+        var type = $("d-type").value;
+        var gov = $("d-gov").value;
+        var sexEl = document.querySelector('input[name="d-sex"]:checked');
+        if (!name){ msg.classList.add("err"); msg.textContent = "اكتب اسمك الأول."; return; }
+        if (!type){ msg.classList.add("err"); msg.textContent = "اختر فصيلة دمك — أو «مش عارف فصيلتي»."; return; }
+        if (!gov){ msg.classList.add("err"); msg.textContent = "اختر محافظتك."; return; }
+        if (!sexEl){ msg.classList.add("err"); msg.textContent = "اختر النوع — أو «أفضل عدم القول»."; return; }
+        var months = sexEl.value === "male" ? 3 : 4;
+        var today = new Date(); today.setHours(0,0,0,0);
+        var eligibleOn = today;
+        var v = $("d-last").value;
+        if (v){
+          var last = new Date(v + "T00:00:00");
+          if (last.getTime() > Date.now()){ msg.classList.add("err"); msg.textContent = "تاريخ آخر تبرع ماينفعش يكون في المستقبل."; return; }
+          eligibleOn = addMonthsClamped(last, months);
+        }
+        $("ds-title").textContent = "تم تسجيلك يا " + name.split(" ")[0];
+        $("ds-elig").textContent = eligibleOn <= today
+          ? "تقدر تتبرع من النهاردة"
+          : "تقدر تتبرع تاني يوم " + fmtDate(eligibleOn);
+        var sc = $("donor-success");
+        sc.classList.add("show");
+        sc.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+
+      /* ---------- Availability toggle ---------- */
+      var available = true;
+      $("avail-switch").addEventListener("click", function(){
+        available = !available;
+        this.setAttribute("aria-checked", available ? "true" : "false");
+        $("avail-state").textContent = available ? "متاح دلوقتي" : "موقوف مؤقتًا";
+        $("avail-sub").textContent = available
+          ? "هتوصلك طلبات قريبة منك وفصيلتها تنفعك."
+          : "مش هتوصلك أي طلبات لحد ما ترجع تفعّل التوفر.";
+      });
+
+      /* ---------- Init ---------- */
+      renderStory();
+      renderRequests();
+    </script>
+  </body>
+</html>
